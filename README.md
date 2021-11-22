@@ -12,6 +12,7 @@ You can do this with: `haxelib install linc_luajit` on a Command prompt/PowerShe
 * Shadow Mario - Coding
 * RiverOaken - Arts and Animations
 * Toby Fox - Deltarune soudns and inspiration
+* ZeeByte and others - [Willow over GF!](https://gamebanana.com/mods/337434)
 
 # Features
 
