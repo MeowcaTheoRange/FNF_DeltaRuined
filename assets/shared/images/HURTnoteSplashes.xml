@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="HURTnoteSplashes.png">
+	<SubTexture name="NOTESPLASH0000" x="0" y="0" width="43" height="44"/>
+	<SubTexture name="NOTESPLASH0001" x="43" y="0" width="43" height="44"/>
+	<SubTexture name="NOTESPLASH0002" x="86" y="0" width="43" height="44"/>
+	<SubTexture name="NOTESPLASH0003" x="129" y="0" width="43" height="44"/>
+	<SubTexture name="NOTESPLASH0004" x="172" y="0" width="43" height="44"/>
+	<SubTexture name="NOTESPLASH0005" x="215" y="0" width="43" height="44"/>
+</TextureAtlas>

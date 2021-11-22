@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureAtlas imagePath="noteSplashes.png">
+	<SubTexture name="NOTESPLASH0000" x="0" y="0" width="44" height="45"/>
+	<SubTexture name="NOTESPLASH0001" x="44" y="0" width="44" height="45"/>
+	<SubTexture name="NOTESPLASH0002" x="88" y="0" width="44" height="45"/>
+	<SubTexture name="NOTESPLASH0003" x="132" y="0" width="44" height="45"/>
+</TextureAtlas>
