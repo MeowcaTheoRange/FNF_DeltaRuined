@@ -1,0 +1,30 @@
+{
+    "opponentSing": [
+        "Your opponent sings quite proudly.",
+        "<<OPPONENT>> sings so loud, they drown you out!"
+    ],
+    "boyfriendMiss": [
+        "Must've hurt!",
+        "Ouch!",
+        "You tried to freestyle so hard, you missed!"
+    ],
+    "boyfriendSing": {
+        "five": [
+            "You sing loudly! You drown out\nyour opponent.",
+            "You sing outstandingly! <<OPPONENT>> gets blown\n  away!"
+        ],
+        "ten": [
+            "You sing proudly! Your microphone seems a little\n  scuffed, but that won't stop you!",
+            "You sing happily! You try to freestyle, but it's a\n  little bit hard to do that in such a heated battle."
+        ],
+        "twenty": [
+            "You sing against your opponent."
+        ],
+        "fifty": [
+            "You sing???"
+        ],
+        "hundred": [
+            "??????????????????????????????????????????????????\n  ????????????????????"
+        ]
+    }
+}

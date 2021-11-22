@@ -42,6 +42,7 @@ import flixel.util.FlxSort;
 import flixel.util.FlxStringUtil;
 import flixel.util.FlxTimer;
 import haxe.Json;
+import sys.io.File;
 import lime.utils.Assets;
 import openfl.display.BlendMode;
 import openfl.display.StageQuality;
@@ -121,6 +122,7 @@ class PlayState extends MusicBeatState
 	public static var curStage:String = '';
 	public static var isPixelStage:Bool = false;
 	public static var SONG:SwagSong = null;
+	public static var FunnyDialogues:Dynamic;
 	public static var isStoryMode:Bool = false;
 	public static var storyWeek:Int = 0;
 	public static var storyPlaylist:Array<String> = [];
@@ -311,6 +313,8 @@ class PlayState extends MusicBeatState
 		if (SONG == null)
 			SONG = Song.loadFromJson('tutorial');
 
+		FunnyDialogues = Json.parse(File.getContent(Paths.json("dialogues")));
+		trace(FunnyDialogues);
 		Conductor.mapBPMChanges(SONG);
 		Conductor.changeBPM(SONG.bpm);
 
@@ -692,12 +696,12 @@ class PlayState extends MusicBeatState
 		p2hplabel.scrollFactor.set();
 		p2hplabel.visible = !ClientPrefs.hideHud;
 		add(p2hplabel);
-		p1label = new FlxText(iconP1.x + 64, barp1.y - 10, 500, "BOYFRIEND", 40);
+		p1label = new FlxText(iconP1.x + 64, barp1.y - 10, 500, boyfriend.healthIcon.toUpperCase(), 40);
 		p1label.setFormat(Paths.font("dtm_MONO.ttf"), 40, FlxColor.WHITE, LEFT);
 		p1label.scrollFactor.set();
 		p1label.visible = !ClientPrefs.hideHud;
 		add(p1label);
-		p2label = new FlxText(iconP2.x + 64, barp2.y - 10, 500, "PICO", 40);
+		p2label = new FlxText(iconP2.x + 64, barp2.y - 10, 500, dad.healthIcon.toUpperCase(), 40);
 		p2label.setFormat(Paths.font("dtm_MONO.ttf"), 40, FlxColor.WHITE, LEFT);
 		p2label.scrollFactor.set();
 		p2label.visible = !ClientPrefs.hideHud;
@@ -871,63 +875,75 @@ class PlayState extends MusicBeatState
 	}
 
 	var dialogueRunningRn:Bool = false;
-	var curDialogue:String = "A rap battle festers!";
+	var curDatabase:Array<Dynamic> = ["A rap battle festers!"];
 	var dgind:Int = 0;
-	public function typeOutDialogue(string:String, ?object:FlxText) {
-		FlxG.watch.addQuick("curDialogue", curDialogue);
-		FlxG.watch.addQuick("string", string);
-		FlxG.watch.addQuick("dialogueRunningRn", dialogueRunningRn);
-		var stringArray:Array<String> = string.split("");
-		var arrayofShitLol:Array<String> = ["*", " "];
-		var shouldinterrupt:Bool = false;
-		if (string == curDialogue && dialogueRunningRn) {
-			shouldinterrupt = false;
-			FlxG.watch.addQuick("shouldinterrupt", "false, string is curDialogue and dialogueRunningRn is true");
-		} else if (string == curDialogue && !dialogueRunningRn) {
-			shouldinterrupt = false;
-			FlxG.watch.addQuick("shouldinterrupt", "false, string is curDialogue but dialogueRunningRn is false");
-		} else if (string != curDialogue && dialogueRunningRn) {
-			shouldinterrupt = true;
-			FlxG.watch.addQuick("shouldinterrupt", "true, string is not curDialogue but dialogueRunningRn is true");
-		} else if (string != curDialogue && !dialogueRunningRn) {
-			shouldinterrupt = true;
-			FlxG.watch.addQuick("shouldinterrupt", "true, string is not curDialogue and dialogueRunningRn is false");
-		}
-		if (dgind <= 3 && curDialogue != "A rap battle festers!") {
-			shouldinterrupt = false;
-		}
-		if (shouldinterrupt) {
-			curDialogue = string;
-			var funnyTimer = new FlxTimer();
-			object.text = "";
-			funnyTimer.cancel();
-			funnyTimer.finished = true;
-			funnyTimer.active = false;
-			funnyTimer.loops = 1;
-			funnyTimer.time = 0;
-			funnyTimer.destroy();
-			dgind = 0;
-			var i = 0;
-			dialogueRunningRn = true;
-			funnyTimer.start(0.05, function(funnyTimer:FlxTimer) {
-				arrayofShitLol.push(stringArray[i]);
-				if (object != null) {
-					object.text = arrayofShitLol.join("");
-					FlxG.sound.play(Paths.sound('dialogueDelta'));
+	var funnyTimer = new FlxTimer();
+	var customDialogue:Bool = false;
+	public function typeOutDialogue(database:Array<Dynamic>, ?object:FlxText, ?isCustomDialogue:Bool) {
+		if ((isCustomDialogue ? true : !customDialogue)) {
+			FlxG.watch.addQuick("curDatabase", curDatabase);
+			FlxG.watch.addQuick("database", database);
+			FlxG.watch.addQuick("dialogueRunningRn", dialogueRunningRn);
+			var shouldinterrupt:Bool = false;
+			if (database == curDatabase && dialogueRunningRn) {
+				shouldinterrupt = false;
+				FlxG.watch.addQuick("shouldinterrupt", "false, database is curDatabase and dialogueRunningRn is true");
+			} else if (database == curDatabase && !dialogueRunningRn) {
+				shouldinterrupt = false;
+				FlxG.watch.addQuick("shouldinterrupt", "false, database is curDatabase but dialogueRunningRn is false");
+			} else if (database != curDatabase && dialogueRunningRn) {
+				shouldinterrupt = true;
+				FlxG.watch.addQuick("shouldinterrupt", "true, database is not curDatabase but dialogueRunningRn is true");
+			} else if (database != curDatabase && !dialogueRunningRn) {
+				shouldinterrupt = true;
+				FlxG.watch.addQuick("shouldinterrupt", "true, database is not curDatabase and dialogueRunningRn is false");
+			}
+			if (dgind <= 3 && curDatabase[0] != "A rap battle festers!") {
+				shouldinterrupt = false;
+			}
+			if (shouldinterrupt) {
+				var string:String = database[FlxG.random.int(0, database.length - 1)];
+				string = string.replace("<<OPPONENT>>", dad.healthIcon.toUpperCase());
+				string = string.replace("<<DAD>>", dad.healthIcon.toUpperCase());
+				string = string.replace("<<BF>>", boyfriend.healthIcon.toUpperCase());
+				string = string.replace("<<YOU>>", boyfriend.healthIcon.toUpperCase());
+				string = string.replace("<<SONGNAME>>", SONG.song.toUpperCase());
+				trace(string);
+				var stringArray:Array<String> = string.split("");
+				var arrayofShitLol:Array<String> = ["*", " "];
+				curDatabase = database;
+				object.text = "";
+				if (funnyTimer.active) {
+					funnyTimer.cancel();
+					funnyTimer.finished = true;
+					funnyTimer.active = false;
+					funnyTimer.loops = 1;
+					funnyTimer.time = 0;
+					funnyTimer.destroy();
 				}
-				if (stringArray[i] == "." || stringArray[i] == "!") {
-					funnyTimer.time = 0.3;
-				} else if (stringArray[i] == "," || stringArray[i] == "?") {
-					funnyTimer.time = 0.15;
-				} else {
-					funnyTimer.time = 0.05;
-				}
-				if (funnyTimer.loopsLeft <= 1) {
-					dialogueRunningRn = false;
-				}
-				i++;
-				dgind++;
-			}, stringArray.length);
+				dgind = 0;
+				var i = 0;
+				dialogueRunningRn = true;
+				funnyTimer.start(0.05, function(funnyTimer:FlxTimer) {
+					arrayofShitLol.push(stringArray[i]);
+					if (object != null) {
+						object.text = arrayofShitLol.join("");
+						FlxG.sound.play(Paths.sound('dialogueDelta'));
+					}
+					if (stringArray[i] == "." || stringArray[i] == "!") {
+						funnyTimer.time = 0.3;
+					} else if (stringArray[i] == "," || stringArray[i] == "?") {
+						funnyTimer.time = 0.15;
+					} else {
+						funnyTimer.time = 0.05;
+					}
+					if (funnyTimer.loopsLeft <= 1) {
+						dialogueRunningRn = false;
+					}
+					i++;
+					dgind++;
+				}, stringArray.length);
+			}
 		}
 		return true;
 	}
@@ -2151,7 +2167,7 @@ class PlayState extends MusicBeatState
 							gf.playAnim(animToPlay + altAnim, true);
 							gf.holdTimer = 0;
 						} else {
-							typeOutDialogue("Your opponent sings quite proudly.", DIALOGUEINTERNAL);
+							typeOutDialogue(FunnyDialogues.opponentSing, DIALOGUEINTERNAL);
 							dad.playAnim(animToPlay + altAnim, true);
 							dad.holdTimer = 0;
 						}
@@ -2578,6 +2594,12 @@ class PlayState extends MusicBeatState
 			
 			case 'BG Freaks Expression':
 				if(bgGirls != null) bgGirls.swapDanceType();
+
+			case 'Custom Dialogue':
+				typeOutDialogue([value1], DIALOGUEINTERNAL, true);
+
+			case 'Dialogue Override':
+				customDialogue = (value1 == "true");
 		}
 		callOnLuas('onEvent', [eventName, value1, value2]);
 	}
@@ -2732,6 +2754,7 @@ class PlayState extends MusicBeatState
 					prevCamFollowPos = camFollowPos;
 
 					PlayState.SONG = Song.loadFromJson(PlayState.storyPlaylist[0] + difficulty, PlayState.storyPlaylist[0]);
+					
 					FlxG.sound.music.stop();
 
 					if(winterHorrorlandNext) {
@@ -3068,7 +3091,7 @@ class PlayState extends MusicBeatState
 
 			boyfriend.playAnim(animToPlay + daAlt, true);
 		}
-		typeOutDialogue("Must've hurt!", DIALOGUEINTERNAL);
+		typeOutDialogue(FunnyDialogues.boyfriendMiss, DIALOGUEINTERNAL);
 		callOnLuas('noteMiss', [notes.members.indexOf(daNote), daNote.noteData, daNote.noteType, daNote.isSustainNote]);
 	}
 
@@ -3184,15 +3207,15 @@ class PlayState extends MusicBeatState
 					boyfriend.holdTimer = 0;
 				}
 				if ((songMisses + ghostMisses) <= 5) {
-					typeOutDialogue("You sing loudly! You drown out\nyour opponent.", DIALOGUEINTERNAL);
+					typeOutDialogue(FunnyDialogues.boyfriendSing.five, DIALOGUEINTERNAL);
 				} else if ((songMisses + ghostMisses) <= 10) {
-					typeOutDialogue("You sing proudly! Your microphone\nseems a little scuffed, but that won't stop you!", DIALOGUEINTERNAL);
+					typeOutDialogue(FunnyDialogues.boyfriendSing.ten, DIALOGUEINTERNAL);
 				} else if ((songMisses + ghostMisses) <= 20) {
-					typeOutDialogue("You sing against your opponent.", DIALOGUEINTERNAL);
+					typeOutDialogue(FunnyDialogues.boyfriendSing.twenty, DIALOGUEINTERNAL);
 				} else if ((songMisses + ghostMisses) <= 50) {
-					typeOutDialogue("You sing???", DIALOGUEINTERNAL);
+					typeOutDialogue(FunnyDialogues.boyfriendSing.fifty, DIALOGUEINTERNAL);
 				} else if ((songMisses + ghostMisses) <= 100) {
-					typeOutDialogue("?????????????????????????????????????????????????????????????????????????????????????????????????", DIALOGUEINTERNAL);
+					typeOutDialogue(FunnyDialogues.boyfriendSing.hundred, DIALOGUEINTERNAL);
 				}
 				if(note.noteType == 'Hey!') {
 					if(boyfriend.animOffsets.exists('hey')) {

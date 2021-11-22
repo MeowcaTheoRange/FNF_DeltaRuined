@@ -77,7 +77,9 @@ class ChartingState extends MusicBeatState
 		['Camera Follow Pos', "Value 1: X\nValue 2: Y\n\nThe camera won't change the follow point\nafter using this, for getting it back\nto normal, leave both values blank."],
 		['Alt Idle Animation', "Sets a speciied suffix after the idle animation name.\nYou can use this to trigger 'idle-alt' if you set\nValue 2 to -alt\n\nValue 1: Character to set (Dad, BF or GF)\nValue 2: New suffix (Leave it blank to disable)"],
 		['Screen Shake', "Value 1: Camera shake\nValue 2: HUD shake\n\nEvery value works as the following example: \"1, 0.05\".\nThe first number (1) is the duration.\nThe second number (0.05) is the intensity."],
-		['Change Character', "Value 1: Character to change (Dad, BF, GF)\nValue 2: New character's name"]
+		['Change Character', "Value 1: Character to change (Dad, BF, GF)\nValue 2: New character's name"],
+		['Custom Dialogue', "Value 1: Text to type in Dialogue Box\nTIP: Typing \"<<OPPONENT>> or <<DAD>>\" will replace the text with player2's name.\nTyping \"<<YOU>> or <<BF>>\" will replace the text with player1's name.\nTyping \"<<SONGNAME>>\" will replace the text with the song name."],
+		['Dialogue Override', "Value 1: Whether to enable the override to disable default dialogue behaviour. <true, false>\nValue 2: null"]
 	];
 
 	var _file:FileReference;
