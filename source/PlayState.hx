@@ -716,7 +716,7 @@ class PlayState extends MusicBeatState
 		AccuracyPercentage.scrollFactor.set();
 		AccuracyPercentage.visible = !ClientPrefs.hideHud;
 		add(AccuracyPercentage);
-		DIALOGUEINTERNAL = new FlxText(16, FlxG.height * 0.8 + 8, 0, "* A rap battle festers!", 40);
+		DIALOGUEINTERNAL = new FlxText(16, FlxG.height * 0.8 + 8, 0, "* ", 40);
 		DIALOGUEINTERNAL.setFormat(Paths.font("dtm_MONO.ttf"), 40, FlxColor.WHITE, LEFT);
 		DIALOGUEINTERNAL.scrollFactor.set();
 		DIALOGUEINTERNAL.visible = !ClientPrefs.hideHud;
@@ -937,7 +937,7 @@ class PlayState extends MusicBeatState
 					} else {
 						funnyTimer.time = 0.05;
 					}
-					if (funnyTimer.loopsLeft <= 1) {
+					if (funnyTimer.loopsLeft <= 0) {
 						dialogueRunningRn = false;
 					}
 					i++;
@@ -1246,6 +1246,7 @@ class PlayState extends MusicBeatState
 					case -1:
 						FlxG.sound.play(Paths.sound('encounter'), 0.6);
 						boyfriend.playAnim("attack", true, false);
+						typeOutDialogue(FunnyDialogues.songStart, DIALOGUEINTERNAL);
 					case 0:
 						boyfriend.playAnim("pre-attack", true, false);
 						FlxG.sound.play(Paths.sound('intro3' + introSoundsSuffix), 0.6);
@@ -2551,6 +2552,8 @@ class PlayState extends MusicBeatState
 							}
 							boyfriend.visible = true;
 							iconP1.changeIcon(boyfriend.healthIcon);
+							p1label.text = boyfriend.healthIcon.toUpperCase();
+							barp1.createFilledBar(0xFF800000, FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2], 255));
 						}
 
 					case 1:
@@ -2575,6 +2578,8 @@ class PlayState extends MusicBeatState
 							}
 							dad.visible = true;
 							iconP2.changeIcon(dad.healthIcon);
+							p2label.text = dad.healthIcon.toUpperCase();
+							barp2.createFilledBar(0xFF800000, FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2], 255));
 						}
 
 					case 2:
@@ -3216,6 +3221,8 @@ class PlayState extends MusicBeatState
 					typeOutDialogue(FunnyDialogues.boyfriendSing.fifty, DIALOGUEINTERNAL);
 				} else if ((songMisses + ghostMisses) <= 100) {
 					typeOutDialogue(FunnyDialogues.boyfriendSing.hundred, DIALOGUEINTERNAL);
+				} else if ((songMisses + ghostMisses) >= 101) {
+					typeOutDialogue(FunnyDialogues.boyfriendSing.hundredplus, DIALOGUEINTERNAL);
 				}
 				if(note.noteType == 'Hey!') {
 					if(boyfriend.animOffsets.exists('hey')) {
