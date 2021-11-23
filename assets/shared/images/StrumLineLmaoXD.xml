@@ -4,4 +4,5 @@
 	<SubTexture name="animboil0001" x="0" y="20" width="400" height="20" />
 	<SubTexture name="animboil0002" x="0" y="40" width="400" height="20" />
 	<SubTexture name="animboil0003" x="0" y="60" width="400" height="20" />
+	<SubTexture name="animoff0001" x="0" y="80" width="400" height="20" />
 </TextureAtlas>

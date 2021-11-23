@@ -139,6 +139,8 @@ class PlayState extends MusicBeatState
 	public var eventNotes:Array<Dynamic> = [];
 
 	private var strumLine:FlxSprite;
+	private var strumssLine:FlxSprite;
+	
 
 	//Handles the new epic mega sexy cam code that i've done
 	private var camFollow:FlxPoint;
@@ -1597,15 +1599,16 @@ class PlayState extends MusicBeatState
 			strumLineNotes.add(babyArrow);
 			babyArrow.postAddedToGroup();
 		}
-		var strumssLine:FlxSprite = new FlxSprite((FlxG.width / 2), 100);
+		strumssLine = new FlxSprite((FlxG.width / 2), 100);
 		strumssLine.scrollFactor.set();
 		strumssLine.width = 400;
 		strumssLine.height = 20;
 		strumssLine.scale.set(2, 2);
 		strumssLine.cameras = [camHUD];
 		strumssLine.loadGraphic(Paths.image('StrumLineLmaoXD', 'shared'), true, 200, 20);
+		strumssLine.animation.add("animoff", [4], 8, false);
 		strumssLine.animation.add("boil", [0, 1, 2, 3], 8, true);
-		strumssLine.animation.play("boil");
+		strumssLine.animation.play("animoff");
 		add(strumssLine);
 		strumssLine.screenCenter(X);
 	}
@@ -3040,11 +3043,19 @@ class PlayState extends MusicBeatState
 
 		playerStrums.forEach(function(spr:StrumNote)
 		{
+			if (spr.animation.curAnim.name == 'confirm') {
+				strumssLine.animation.play("boil");
+				strumssLine.color = FlxColor.fromHSB(ClientPrefs.arrowHSV[spr.ID][0] + 180, 1, 1, 255);
+			}
 			if(controlArray[spr.ID] && spr.animation.curAnim.name != 'confirm') {
+				strumssLine.animation.play("boil");
+				strumssLine.color = FlxColor.fromHSB(ClientPrefs.arrowHSV[spr.ID][0] + 180, 1, 1, 255);
 				spr.playAnim('pressed');
 				spr.resetAnim = 0;
 			}
 			if(controlReleaseArray[spr.ID]) {
+				strumssLine.animation.play("animoff", false);
+				strumssLine.color = 0xFFFFFFFF;
 				spr.playAnim('static');
 				spr.resetAnim = 0;
 			}
@@ -3596,52 +3607,50 @@ class PlayState extends MusicBeatState
 			velocity = FlxG.random.int(800, 950);
 		else
 			velocity = FlxG.random.int(0, 150);
-		for (i in 0...funnyString.length) {
-			var thetext:FlxText;
-			var pos:FlxPoint;
-			var color:FlxColor;
-			if (isDad) {
-				pos = dad.getMidpoint();
-				color = FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2], 255);
-			} else {
-				pos = boyfriend.getMidpoint();
-				color = FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2], 255);
-			}
-			if(painful) {
-				var targetsArray:Array<FlxCamera> = [camGame, camHUD];
-				for (i in 0...targetsArray.length) {
-					targetsArray[i].shake(0.01, 0.1);
-				}
-				color = FlxColor.fromRGB(255, 0, 0, 255);
-				if (hard)
-					FlxG.sound.play(Paths.sound('ouchmiss'));
-				else
-					FlxG.sound.play(Paths.sound('ouchnote'));
-			} else {
-				if (hard)
-					FlxG.sound.play(Paths.sound('noteheal'));
-			}
-			thetext = new FlxText(pos.x + (i * 24), pos.y, 0, funnyString.charAt(i), 56);
-			thetext.setFormat("times.ttf", 56, color, LEFT, OUTLINE, FlxColor.BLACK);
-			thetext.cameras = [camGame];
-			FlxTween.tween(thetext, {x: (pos.y + (i * 24)) + velocity}, 2, {
-				ease: FlxEase.quadOut
-			});
-			FlxTween.tween(thetext, {y: pos.y + 100}, 2, {
-				onComplete: function(tween:FlxTween)
-				{
-					FlxTween.tween(thetext, {alpha: 0}, 0.2, {
-						onComplete: function(tween:FlxTween)
-						{
-							thetext.destroy();
-						},
-						startDelay: Conductor.crochet * 0.001
-					});
-				},
-				ease: FlxEase.bounceOut
-			});
-			add(thetext);
+		var thetext:FlxText;
+		var pos:FlxPoint;
+		var color:FlxColor;
+		if (isDad) {
+			pos = dad.getMidpoint();
+			color = FlxColor.fromRGB(boyfriend.healthColorArray[0], boyfriend.healthColorArray[1], boyfriend.healthColorArray[2], 255);
+		} else {
+			pos = boyfriend.getMidpoint();
+			color = FlxColor.fromRGB(dad.healthColorArray[0], dad.healthColorArray[1], dad.healthColorArray[2], 255);
 		}
+		if(painful) {
+			var targetsArray:Array<FlxCamera> = [camGame, camHUD];
+			for (i in 0...targetsArray.length) {
+				targetsArray[i].shake(0.01, 0.1);
+			}
+			color = FlxColor.fromRGB(255, 0, 0, 255);
+			if (hard)
+				FlxG.sound.play(Paths.sound('ouchmiss'));
+			else
+				FlxG.sound.play(Paths.sound('ouchnote'));
+		} else {
+			if (hard)
+				FlxG.sound.play(Paths.sound('noteheal'));
+		}
+		thetext = new FlxText(pos.x, pos.y, 0, funnyString, 56);
+		thetext.setFormat("times.ttf", 56, color, LEFT, OUTLINE, FlxColor.BLACK);
+		thetext.cameras = [camGame];
+		FlxTween.tween(thetext, {x: pos.y + velocity}, 2, {
+			ease: FlxEase.quadOut
+		});
+		FlxTween.tween(thetext, {y: pos.y + 100}, 2, {
+			onComplete: function(tween:FlxTween)
+			{
+				FlxTween.tween(thetext, {alpha: 0}, 0.2, {
+					onComplete: function(tween:FlxTween)
+					{
+						thetext.destroy();
+					},
+					startDelay: Conductor.crochet * 0.001
+				});
+			},
+			ease: FlxEase.bounceOut
+		});
+		add(thetext);
 	}
 	function StrumPlayAnim(isDad:Bool, id:Int, time:Float) {
 		var spr:StrumNote = null;

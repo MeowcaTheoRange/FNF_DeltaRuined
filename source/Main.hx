@@ -71,6 +71,9 @@ class Main extends Sprite
 
 		Paths.getModFolders();
 		ClientPrefs.startControls();
+		ClientPrefs.globalAntialiasing = false;
+		ClientPrefs.downScroll = false;
+		ClientPrefs.middleScroll = true;
 		addChild(new FlxGame(gameWidth, gameHeight, initialState, zoom, framerate, framerate, skipSplash, startFullscreen));
 
 		#if !mobile
